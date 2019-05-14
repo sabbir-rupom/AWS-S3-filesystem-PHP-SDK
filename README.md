@@ -32,7 +32,7 @@ require_once 'AwsS3Helper.php';
 $awsSdkObj    = AwsS3Helper::getInstance();
 
 // Execute upload function
-$uploadResutl = $awsSdkObj->uploadFileToS3('s3-bucket-name', 'file-name', 'file-source-in-server-local', 'content-type-mime');
+$uploadResutl = $awsSdkObj->uploadFileToS3('s3-bucket-name', 'file-name', 'file-source-in-server', 'mime-content-type');
 
 // Check file upload result
 if (empty($uploadResutl)) {
@@ -45,4 +45,19 @@ if (empty($uploadResutl)) {
 }
 
 ```
- 
+
+## Functional Features
+
+Featured functions are as follows:
+
+* uploadFileToS3($bucketName, $filekey, $fileLocation, $contentType, $public)
+* checkBucketExistInS3($bucketName)
+* checkFileExistInS3($bucketName, $fileKey)
+* getS3UrlPath($bucketName)
+* deleteFileFromS3($bucketName, $fileKey)
+* deleteDirectoryFilesFromS3($bucketName, $dirPrefix)
+* getBucketList($nameOnly)
+* getFileList($bucketName, $dirPrefix)
+* createBucket($name, $public)
+* getMimeType($filename)
+
