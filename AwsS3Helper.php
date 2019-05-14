@@ -1,7 +1,11 @@
 <?php
 
-// Require the Composer autoloader.
-require 'vendor/autoload.php';
+/**
+ * A simple PHP helper class to manipulate files in AWS S3 buckets using aws-sdk-php library
+ *
+ * @author Sabbir Hossain Rupom <sabbir.hossain.rupom@hotmail.com>
+ */
+require 'vendor/autoload.php'; // Require the Composer autoloader.
 
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
@@ -45,7 +49,7 @@ class AwsS3Helper {
         }
 
         $this->config = parse_ini_file(__DIR__ . '/config.ini');
-        
+
         if (empty($this->config['AWS_REGION']) || empty($this->config['ACCESS_TOKEN']) || empty($this->config['SECRET_KEY'])) {
             die("Configuration failed. Settings data is empty - please check 'config.ini' file");
         }
@@ -128,6 +132,28 @@ class AwsS3Helper {
      * @param string $fileKey
      * @return bool Return TRUE if object/file exist, otherwise FALSE
      */
+    public function checkBucketExistInS3($bucketName) {
+        try {
+            $result = $this->s3Client->headBucket([
+                'Bucket' => $bucketName
+            ]);
+            $this->result['success'] = TRUE;
+        } catch (AwsException $e) {
+            // output error message if fails
+            $this->result['msg'] = $e->getMessage();
+            $this->result['success'] = FALSE;
+        }
+
+        return $this->result['success'];
+    }
+
+    /**
+     * Check object file exist or not
+     * 
+     * @param string $bucketName
+     * @param string $fileKey
+     * @return bool Return TRUE if object/file exist, otherwise FALSE
+     */
     public function checkFileExistInS3($bucketName, $fileKey) {
         return $this->s3Client->doesObjectExist($bucketName, $fileKey);
     }
@@ -160,6 +186,7 @@ class AwsS3Helper {
                 ));
             }
             $this->result['success'] = TRUE;
+            $this->result['msg'] = 'File has been deleted from AWS S3 successfully';
         } catch (AwsException $e) {
             // output error message if fails
             $this->result['msg'] = $e->getMessage();
@@ -195,6 +222,7 @@ class AwsS3Helper {
             }
 
             $this->result['success'] = TRUE;
+            $this->result['msg'] = 'Directory has been deleted from AWS S3 successfully';
         } catch (AwsException $e) {
             // output error message if fails
             $this->result['msg'] = $e->getMessage();
@@ -206,14 +234,60 @@ class AwsS3Helper {
 
     /**
      * Get all bucket list in AWS S3
+     * @param bool $nameOnly Set flag true if only bucket name is wanted, otherwise all bucket information will be provided
      * @return array [] Result array
+     *      [bucketList]    Bucket names / information array
      *      [success]       bool Success result
      *      [msg]           string Exception message if occurred during function execution
      */
-    public function getBucketList() {
+    public function getBucketList($nameOnly = TRUE) {
         try {
             $result = $this->s3Client->listBuckets();
-            $this->result['bucketList'] = $result->toArray();
+            $this->result['bucketList'] = [];
+
+            foreach ($result->toArray()['Buckets'] as $val) {
+                $this->result['bucketList'][] = $nameOnly ? $val['Name'] : $val;
+            }
+
+            $this->result['success'] = TRUE;
+        } catch (AwsException $e) {
+            // output error message if fails
+            $this->result['msg'] = $e->getMessage();
+            $this->result['success'] = FALSE;
+        }
+
+        return $this->result;
+    }
+
+    /**
+     * Get all file/object list from specific path in AWS S3 bucket
+     * @param bool $nameOnly Set flag true if only bucket name is wanted, otherwise all bucket information will be provided
+     * @return array [] Result array
+     *      [fileList]      List of file names
+     *      [success]       bool Success result
+     *      [msg]           string Exception message if occurred during function execution
+     */
+    public function getFileList($bucketName, $dirPrefix) {
+        try {
+            $this->result['fileList'] = [];
+
+            $objects = $this->s3Client->listObjects([
+                'Bucket' => $bucketName,
+                'Prefix' => $dirPrefix
+            ]);
+
+            if (!empty($objects['Contents'])) {
+                foreach ($objects['Contents'] as $object) {
+                    // Prepare file name from full path key
+                    $fileKey = $object['Key'];
+                    $idx = explode('/', $fileKey);
+                    $count_explode = count($idx);
+                    $fileName = strtolower($idx[$count_explode - 1]);
+
+                    $this->result['fileList'][] = $fileName;
+                }
+            }
+
             $this->result['success'] = TRUE;
         } catch (AwsException $e) {
             // output error message if fails
@@ -234,11 +308,14 @@ class AwsS3Helper {
      *      [msg]           string Exception message if occurred during function execution
      */
     public function createBucket($name, $public = true) {
+        $name = strtolower($name);
         try {
-            $result = $this->s3Client->createBucket([
-                'Bucket' => $bucketName, // REQUIRED
-                'ACL' => $public ? 'public-read' : 'authenticated-read',
-            ]);
+            if ($this->checkBucketExistInS3($name) == false) {
+                $result = $this->s3Client->createBucket([
+                    'Bucket' => $name, // REQUIRED
+                    'ACL' => $public ? 'public-read' : 'authenticated-read',
+                ]);
+            }
             $this->result['success'] = TRUE;
         } catch (AwsException $e) {
             // output error message if fails
