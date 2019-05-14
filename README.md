@@ -50,14 +50,62 @@ if (empty($uploadResutl)) {
 
 Featured functions are as follows:
 
-* uploadFileToS3($bucketName, $filekey, $fileLocation, $contentType, $public)
-* checkBucketExistInS3($bucketName)
-* checkFileExistInS3($bucketName, $fileKey)
-* getS3UrlPath($bucketName)
-* deleteFileFromS3($bucketName, $fileKey)
-* deleteDirectoryFilesFromS3($bucketName, $dirPrefix)
-* getBucketList($nameOnly)
-* getFileList($bucketName, $dirPrefix)
-* createBucket($name, $public)
-* getMimeType($filename)
+* **uploadFileToS3()**
+  * Upload file to specific bucket in S3 
+  * Function accepts upto 5 parameters 
+    * S3 Bucket Name
+    * File name / Path to File name in S3 
+    * File source in local server
+    * Mime-content type of source file 
+    * Public share flag, if `TRUE` uploaded file will be visible online 
+* **checkBucketExistInS3()**
+  * Checks if requested bucket exists in S3 or not
+  * Function accepts 1 parameter
+    * S3 Bucket Name
+* **checkFileExistInS3()**
+  * Checks if requested file exists in S3 or not
+  * Function accepts 2 parameter
+    * S3 Bucket Name
+    * File name / Path to File name in S3
+* **getS3UrlPath()**
+  * Gets URL path of a S3 bucket object
+  * Function accepts 2 parameter
+    * S3 Bucket Name
+    * File name / Path to File name in S3
+* **deleteFileFromS3()**
+  * Deletes a file from S3 bucket
+  * Function accepts 2 parameter
+    * S3 Bucket Name
+    * File name / Path to File name in S3
+* **deleteDirectoryFilesFromS3()**
+  * Deletes a directory from S3 bucket
+  * Function accepts 2 parameter
+    * S3 Bucket Name
+    * Directory path in S3 
+* **getBucketList()**
+  * Get list of existing bucket in S3
+  * Function accepts 1 parameter
+    * Name-only flag, if `TRUE` only the bucket names are returned in array, else all information array of buckets are returned
+* **getFileList()**
+  * Get list of existing files in S3 bucket
+  * Function accepts 2 parameter
+    * S3 Bucket Name
+    * Directory path in S3 
+* **createBucket()**
+  * Creates a bucket in S3
+  * Function accepts 2 parameter
+    * S3 Bucket Name, must be unique AWS regionally
+    * Public share flag [ TRUE / FALSE ] 
+* **getMimeType()**
+  * Static function, does not need class instance to access
+  * Gets the Mime-Content type of a file 
+  * Function accepts 1 parameter
+    * File name / Source path 
 
+## Test Example
+
+An example script is provided in `test` folder inside the repository, covers 80% of the total helper class usage.
+
+## Author
+
+* **Sabbir Hossain (Rupom)** - *Web Developer* - [https://sabbirrupom.com/](https://sabbirrupom.com/)
