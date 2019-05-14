@@ -3,6 +3,8 @@
 /**
  * A simple PHP helper class to manipulate files in AWS S3 buckets using aws-sdk-php library.
  *
+ * @category S3-Filesystem-Helper
+ * @package AWS-S3-filesystem-PHP-SDK
  * @author Sabbir Hossain Rupom <sabbir.hossain.rupom@hotmail.com>
  */
 require_once 'vendor/autoload.php'; // Require the Composer autoloader.
