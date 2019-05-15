@@ -68,7 +68,7 @@ class AwsS3Helper {
      * @param bool   $public       Set public status true/false for uploaded file
      *
      * @return array [] Result array
-     *               [fileUrl]       string Live url of uploaded object, if uploaded successfully
+     *               [url]           string Live url of uploaded object, if uploaded successfully
      *               [success]       bool Success result
      *               [msg]           string Exception message if occurred during function execution
      */
@@ -86,7 +86,7 @@ class AwsS3Helper {
             }
 
             $result = $this->_s3Client->putObject($configArray);
-            $this->result['fileUrl'] = $this->_s3Client->getObjectUrl($bucketName, $filekey);
+            $this->result['url'] = $this->_s3Client->getObjectUrl($bucketName, $filekey);
             $this->result['success'] = true;
         } catch (AwsException $e) {
             // output error message if fails
@@ -142,6 +142,21 @@ class AwsS3Helper {
      */
     public function getS3UrlPath($bucketName) {
         return 'https://' . $bucketName . '.s3.' . $this->config['AWS_REGION'] . '.amazonaws.com/';
+    }
+    
+    /**
+     * Get URL path of an object/file in S3 bucket.
+     *
+     * @param string $bucketName Name of the S3 bucket
+     * @param string $filekey    File path string in S3 bucket
+     *
+     * @return mixed URL of s3 object in bucket, otherwise returned false
+     */
+    public function getFileUrlInS3($bucketName, $filekey) {
+        if ($this->checkFileExistInS3($bucketName, $fileKey)) {
+            return $this->_s3Client->getObjectUrl($bucketName, $filekey);
+        }
+        return false;
     }
 
     /**

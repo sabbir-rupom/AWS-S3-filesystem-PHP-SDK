@@ -3,30 +3,30 @@ A simple PHP helper class to manipulate files in AWS S3 buckets using aws-sdk-ph
 
 ## Getting Started
 
-Before you begin, you need following things as requirement - 
+Before you begin, you need following things as requirement: 
 
 * **AWS credentials** from your AWS account [see here](https://aws.amazon.com/developers/access-keys/)
 * **PHP >= 5.5** [ Tested upto 7.2 ]
-* **Install the SDK** – If you have already installed [Composer](https://getcomposer.org/) in your system / source directory 
+* **Install the SDK** – If you have already installed [Composer](https://getcomposer.org/) in your system / source directory
   
    ```
    composer update
    ```
 
-   Make sure to run above command where the `composer.json` file is located alongside `AwsS3Helper` helper class. 
+   Make sure to run above command where the `composer.json` file is located
 
    [ **Note** ] If your project already using composer autoload with other libraries, just append `"aws/aws-sdk-php": "^3.93"`
    in the *required* field of your `composer.json`
 
-* Check inside the `AwsS3Helper` class file above if `vendor/autoload.php` is properly added as required script.
-* Finally, configure you AWS **Access Key** and **Secret Key** in `config.ini` file. 
+* Check inside the `AwsS3Helper` class file above if `vendor/autoload.php` is properly added as required script
+* Finally, configure your AWS **Access Key** and **Secret Key** in `config.ini` file
 
 
 ## Usage
 
 ```php
 
-require_once 'AwsS3Helper.php';
+require_once '/--path to file--/AwsS3Helper.php';
 
 // Get object of AwsS3Helper instance.
 $awsSdkObj    = AwsS3Helper::getInstance();
@@ -68,7 +68,11 @@ Featured functions are as follows:
     * S3 Bucket Name
     * File name / Path to File name in S3
 * **getS3UrlPath()**
-  * Gets URL path of a S3 bucket object
+  * Gets base URL path of a S3 bucket
+  * Function accepts 1 parameter
+    * S3 Bucket Name
+* **getFileUrlInS3()**
+  * Gets URL path of an object in S3 bucket
   * Function accepts 2 parameter
     * S3 Bucket Name
     * File name / Path to File name in S3
@@ -83,14 +87,14 @@ Featured functions are as follows:
     * S3 Bucket Name
     * Directory path in S3 
 * **getBucketList()**
-  * Get list of existing bucket in S3
+  * Get list of existing buckets in S3
   * Function accepts 1 parameter
     * Name-only flag, if `TRUE` only the bucket names are returned in array, else all information array of buckets are returned
 * **getFileList()**
-  * Get list of existing files in S3 bucket
+  * Get list of existing files from specific key-path in S3 bucket
   * Function accepts 2 parameter
     * S3 Bucket Name
-    * Directory path in S3 
+    * Directory key-path in S3 
 * **createBucket()**
   * Creates a bucket in S3
   * Function accepts 2 parameter

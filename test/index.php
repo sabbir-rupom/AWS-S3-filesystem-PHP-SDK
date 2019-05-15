@@ -4,7 +4,7 @@
  *
  * @author Sabbir Hossain Rupom <sabbir.hossain.rupom@hotmail.com>
  */
-require_once 'AwsS3Helper.php';
+require_once '../AwsS3Helper.php';
 
 // The following test script covers 80% functionalities of the helper class as example
 // The script does the following works
